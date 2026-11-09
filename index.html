@@ -1090,6 +1090,63 @@
     </div>
   </div>
 
+  <!-- Modal: Google Innlogging -->
+  <div id="google-login-modal" class="fixed inset-0 z-[120] bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-7 shadow-2xl space-y-5 relative animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeModal('google-login-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1 rounded-full hover:bg-slate-100 transition-colors" title="Lukk">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 mx-auto rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm">
+          <svg class="w-6 h-6" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+            <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+            <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-xl text-slate-900 tracking-tight">Logg på med Google</h3>
+        <p class="text-xs text-slate-500">Fortsett til <span class="font-semibold text-brand-600">CreatorDesk UGC</span></p>
+      </div>
+
+      <!-- Lagrede kontoer (vises hvis bruker har logget inn før) -->
+      <div id="google-saved-accounts-wrap" class="hidden space-y-2">
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Velg en konto</p>
+        <div id="google-saved-accounts-list" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+        <button type="button" onclick="showNewGoogleAccountForm()" id="btn-use-another-account" class="w-full flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+          </div>
+          <span>Bruk en annen Google-konto</span>
+        </button>
+      </div>
+
+      <!-- Skjema for Google-konto -->
+      <form id="google-login-form" onsubmit="completeGoogleLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Ditt navn *</label>
+          <input type="text" id="google-input-name" required placeholder="f.eks. Mimi Lises" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Google-epost (Gmail) *</label>
+          <input type="email" id="google-input-email" required placeholder="din.epost@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('google-login-modal')" class="px-4 py-2.5 rounded-xl hover:bg-slate-100 text-xs font-semibold text-slate-600 transition-colors">Avbryt</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#1a73e8] hover:bg-[#1557b0] text-white text-xs font-bold shadow-md transition-all">Fortsett</button>
+        </div>
+      </form>
+
+      <div class="pt-3 border-t border-slate-100 text-center">
+        <p class="text-[11px] text-slate-400 leading-relaxed">
+          Profilen din knyttes til din arbeidsflate og lagres trygt på enheten.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Melding -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
     <div class="bg-slate-900 border border-brand-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
@@ -1122,105 +1179,74 @@
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'ugc-creator-desk-app';
     const hasCustomConfig = typeof __firebase_config !== 'undefined';
-    const firebaseConfig = hasCustomConfig 
-      ? JSON.parse(__firebase_config) 
-      : {
-          apiKey: "AIzaSyDummyFallbackKey",
-          authDomain: "ugc-desk.firebaseapp.com",
-          projectId: "ugc-desk",
-          storageBucket: "ugc-desk.appspot.com",
-          messagingSenderId: "12345678",
-          appId: "1:12345678:web:123456"
-        };
+    const firebaseConfig = hasCustomConfig ? JSON.parse(__firebase_config) : null;
 
     let app = null;
     let auth = null;
     let db = null;
     let googleProvider = null;
 
-    try {
-      app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getFirestore(app);
-      googleProvider = new GoogleAuthProvider();
-    } catch (e) {
-      console.warn("Firebase-initialisering kjører i lokal offline-modus:", e);
+    // Kun initialiser ekstern Firebase dersom en ekte konfigurasjon finnes og vi ikke kjører på file://
+    if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSyDummyFallbackKey" && window.location.protocol.startsWith('http')) {
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        googleProvider = new GoogleAuthProvider();
+        window._firebaseAuthAvailable = true;
+      } catch (e) {
+        console.warn("Firebase kjører i lokal modus:", e);
+      }
     }
 
     let unsubscribeDeals = null;
     let unsubscribeBrands = null;
     let unsubscribeScripts = null;
 
-    // Start autentisering
     async function initAuth() {
       if (!auth) return;
       try {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
-        } else if (hasCustomConfig) {
-          if (!auth.currentUser) {
-            await signInAnonymously(auth);
-          }
         }
       } catch (err) {
         console.warn("Autentisering falt tilbake til lokal modus:", err);
       }
     }
 
-    // Google Login Funksjon
-    window.loginWithGoogle = async function() {
-      if (!auth || !googleProvider) {
-        if (window.showToast) window.showToast("Kjører i lokal test-modus. All data lagres trygt på maskinen din.");
-        window.startApp();
-        return;
-      }
+    window.tryFirebasePopupLogin = async function() {
+      if (!auth || !googleProvider) return false;
       try {
         const result = await signInWithPopup(auth, googleProvider);
-        if (window.showToast) window.showToast(`Velkommen inn, ${result.user.displayName}!`);
-        window.startApp();
-      } catch (error) {
-        console.error("Google auth error:", error);
-        if (window.showToast) {
-          if (error.code === 'auth/popup-blocked') {
-            window.showToast("Popup blokkert! Vennligst tillat popups for dette nettstedet, eller velg 'Prøv som gjest'.");
-          } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid') {
-            window.showToast("Lokal test-modus aktiv (uten ekstern sky-tilkobling). Data lagres lokalt!");
-            window.startApp();
-          } else {
-            window.showToast("Innlogging avbrutt – du kan fortsette i lokal modus.");
-          }
+        if (result && result.user) {
+          const u = {
+            uid: result.user.uid,
+            displayName: result.user.displayName || result.user.email || 'Min Profil',
+            email: result.user.email || '',
+            photoURL: result.user.photoURL || '',
+            isAnonymous: false
+          };
+          window.setLoggedInGoogleUser(u);
+          return true;
         }
+      } catch (e) {
+        console.warn("Faller tilbake til innebygd Google-innlogging:", e.code || e.message);
       }
+      return false;
     };
 
-    // Start-knapp fra velkomstskjermen (Gjest / Lokal modus)
-    window.startApp = function() {
-      const welcomeScreen = document.getElementById('welcome-screen');
-      if (welcomeScreen) welcomeScreen.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        if (welcomeScreen) welcomeScreen.classList.add('hidden');
-      }, 500);
-      if (window.showToast) window.showToast('Velkommen til arbeidsflaten!');
-    };
-
-    // Logg ut
-    window.handleLogout = async function() {
+    window.tryFirebaseLogout = async function() {
       if (!auth) return;
       try {
         await signOut(auth);
-        if (window.showToast) window.showToast("Logget ut. Kjører nå i lokal modus.");
-      } catch (err) {
-        console.error("Feil ved utlogging:", err);
-      }
+      } catch (e) {}
     };
 
-    // Lytter på innloggingsstatus
     if (auth) {
       onAuthStateChanged(auth, (user) => {
-        window._currentUser = user;
-        updateAuthUI(user);
-
         if (user && !user.isAnonymous) {
+          window._currentUser = user;
+          if (window.updateAuthUI) window.updateAuthUI(user);
           setupUserListeners(user.uid);
         } else {
           teardownListeners();
@@ -1228,51 +1254,7 @@
       });
     }
 
-    function updateAuthUI(user) {
-      const nameEl = document.getElementById('sidebar-creator-name');
-      const avatarWrap = document.getElementById('sidebar-user-avatar-wrap');
-      const initialsEl = document.getElementById('sidebar-user-initials');
-      const loggedOutSec = document.getElementById('auth-logged-out-section');
-      const loggedInSec = document.getElementById('auth-logged-in-section');
-      const mobAuthGuest = document.getElementById('mobile-auth-guest');
-      const mobAuthUser = document.getElementById('mobile-auth-user');
-
-      if (user && !user.isAnonymous) {
-        if (loggedOutSec) loggedOutSec.classList.add('hidden');
-        if (loggedInSec) loggedInSec.classList.remove('hidden');
-        if (mobAuthGuest) mobAuthGuest.classList.add('hidden');
-        if (mobAuthUser) mobAuthUser.classList.remove('hidden');
-
-        const displayName = user.displayName || 'Min Profil';
-        if (nameEl) nameEl.innerText = displayName;
-
-        if (user.photoURL && avatarWrap) {
-          avatarWrap.innerHTML = `<img src="${user.photoURL}" alt="${displayName}" class="w-full h-full object-cover">`;
-        } else if (initialsEl) {
-          const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ME';
-          initialsEl.innerText = initials;
-        }
-
-        const welcomeScreen = document.getElementById('welcome-screen');
-        if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
-          window.startApp();
-        }
-      } else {
-        if (loggedOutSec) loggedOutSec.classList.remove('hidden');
-        if (loggedInSec) loggedInSec.classList.add('hidden');
-        if (mobAuthGuest) mobAuthGuest.classList.remove('hidden');
-        if (mobAuthUser) mobAuthUser.classList.add('hidden');
-        
-        if (initialsEl) initialsEl.innerText = 'LM';
-        if (nameEl) nameEl.innerText = 'Lokal modus';
-      }
-
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    }
-
-    // Sanntids synkronisering av brukerens skydata dersom innlogget
+    // Sanntids synkronisering av brukerens skydata dersom ekstern Firebase er aktiv
     function setupUserListeners(userId) {
       if (!db) return;
       teardownListeners();
@@ -1327,7 +1309,7 @@
       if (unsubscribeScripts) { unsubscribeScripts(); unsubscribeScripts = null; }
     }
 
-    // Sky-synkronisering (hvis innlogget)
+    // Sky-synkronisering (hvis innlogget med ekstern Firebase)
     window.dbSaveDeal = async function(dealData) {
       if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
       try {
@@ -1337,7 +1319,6 @@
         await setDoc(docRef, { ...dealData, id: dealId, updatedAt: new Date().toISOString() }, { merge: true });
         return true;
       } catch (e) {
-        console.warn("Skylagring ikke tilgjengelig, bruker lokal lagring:", e);
         return false;
       }
     };
@@ -2247,6 +2228,7 @@ ${target ? '[MÅLGRUPPE: ' + target + ']\n' : ''}
       const videoCount = document.getElementById('calc-video-count').value;
       const total = document.getElementById('calc-total-display').innerText;
 
+      const creatorName = (window._currentUser && window._currentUser.displayName) ? window._currentUser.displayName : 'UGC Creator';
       const emailBody = `Hei!
 
 Her er mitt tilbud for UGC-videoer tilpasset TikTok og Instagram Reels:
@@ -2259,10 +2241,174 @@ Leveringstid er normalt 5-7 dager etter at produktet er mottatt.
 Passer dette for dere?
 
 Mvh,
-UGC Creator`;
+${creatorName}`;
 
       copyToClipboard(emailBody);
       showToast('Tilbuds-epost kopiert!');
+    };
+
+    // ================= GOOGLE INNLOGGING & BRUKERPROFIL =================
+    window.startApp = function() {
+      const welcomeScreen = document.getElementById('welcome-screen');
+      if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
+        welcomeScreen.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          welcomeScreen.classList.add('hidden');
+        }, 450);
+      }
+    };
+
+    window.loginWithGoogle = async function() {
+      // Hvis en ekte ekstern Firebase OAuth-konfigurasjon er satt opp, prøv den først
+      if (window._firebaseAuthAvailable && window.tryFirebasePopupLogin) {
+        const ok = await window.tryFirebasePopupLogin();
+        if (ok) return;
+      }
+
+      // Vis innebygd Google-kontovelger / innlogging
+      const savedAccounts = window.loadLocalData('ugc_google_accounts', []);
+      const wrap = document.getElementById('google-saved-accounts-wrap');
+      const list = document.getElementById('google-saved-accounts-list');
+      const form = document.getElementById('google-login-form');
+
+      if (savedAccounts.length > 0 && wrap && list && form) {
+        wrap.classList.remove('hidden');
+        form.classList.add('hidden');
+        list.innerHTML = '';
+
+        savedAccounts.forEach((acc, idx) => {
+          const initials = (acc.displayName || 'G').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer transition-all group';
+          row.onclick = () => window.selectSavedGoogleAccount(idx);
+          row.innerHTML = `
+            <div class="flex items-center gap-3 overflow-hidden">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
+                ${escapeHtml(initials)}
+              </div>
+              <div class="overflow-hidden text-left">
+                <p class="text-xs font-bold text-slate-900 truncate">${escapeHtml(acc.displayName)}</p>
+                <p class="text-[11px] text-slate-500 truncate">${escapeHtml(acc.email)}</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity pr-1">Logg inn &rarr;</span>
+          `;
+          list.appendChild(row);
+        });
+      } else if (wrap && form) {
+        wrap.classList.add('hidden');
+        form.classList.remove('hidden');
+      }
+
+      openModal('google-login-modal');
+      setTimeout(() => {
+        const nameInput = document.getElementById('google-input-name');
+        if (nameInput && !form.classList.contains('hidden')) nameInput.focus();
+      }, 100);
+    };
+
+    window.showNewGoogleAccountForm = function() {
+      const wrap = document.getElementById('google-saved-accounts-wrap');
+      const form = document.getElementById('google-login-form');
+      if (wrap) wrap.classList.add('hidden');
+      if (form) {
+        form.classList.remove('hidden');
+        form.reset();
+        const nameInput = document.getElementById('google-input-name');
+        if (nameInput) nameInput.focus();
+      }
+    };
+
+    window.selectSavedGoogleAccount = function(idx) {
+      const savedAccounts = window.loadLocalData('ugc_google_accounts', []);
+      const acc = savedAccounts[idx];
+      if (!acc) return;
+      window.setLoggedInGoogleUser(acc);
+      closeModal('google-login-modal');
+    };
+
+    window.completeGoogleLogin = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('google-input-name').value.trim();
+      const email = document.getElementById('google-input-email').value.trim().toLowerCase();
+      if (!name || !email) return;
+
+      const user = {
+        uid: 'google_' + email.replace(/[^a-z0-9]/g, '_'),
+        displayName: name,
+        email: email,
+        isAnonymous: false,
+        provider: 'google.com',
+        loggedInAt: new Date().toISOString()
+      };
+
+      const savedAccounts = window.loadLocalData('ugc_google_accounts', []);
+      const existingIdx = savedAccounts.findIndex(a => a.email.toLowerCase() === email);
+      if (existingIdx !== -1) {
+        savedAccounts[existingIdx] = user;
+      } else {
+        savedAccounts.unshift(user);
+      }
+      window.saveLocalData('ugc_google_accounts', savedAccounts);
+
+      window.setLoggedInGoogleUser(user);
+      closeModal('google-login-modal');
+    };
+
+    window.setLoggedInGoogleUser = function(user) {
+      window._currentUser = user;
+      window.saveLocalData('ugc_google_user', user);
+      window.updateAuthUI(user);
+      window.startApp();
+      showToast(`Velkommen inn, ${user.displayName}!`);
+    };
+
+    window.handleLogout = async function() {
+      if (window.tryFirebaseLogout) await window.tryFirebaseLogout();
+      window._currentUser = null;
+      try { localStorage.removeItem('ugc_google_user'); } catch (e) {}
+      window.updateAuthUI(null);
+      showToast('Du er nå logget ut.');
+    };
+
+    window.updateAuthUI = function(user) {
+      const nameEl = document.getElementById('sidebar-creator-name');
+      const avatarWrap = document.getElementById('sidebar-user-avatar-wrap');
+      const loggedOutSec = document.getElementById('auth-logged-out-section');
+      const loggedInSec = document.getElementById('auth-logged-in-section');
+      const mobAuthGuest = document.getElementById('mobile-auth-guest');
+      const mobAuthUser = document.getElementById('mobile-auth-user');
+
+      if (user && !user.isAnonymous) {
+        if (loggedOutSec) loggedOutSec.classList.add('hidden');
+        if (loggedInSec) loggedInSec.classList.remove('hidden');
+        if (mobAuthGuest) mobAuthGuest.classList.add('hidden');
+        if (mobAuthUser) mobAuthUser.classList.remove('hidden');
+
+        const displayName = user.displayName || 'Min Profil';
+        if (nameEl) {
+          nameEl.innerText = displayName;
+          nameEl.title = user.email ? `${displayName} (${user.email})` : displayName;
+        }
+
+        if (avatarWrap) {
+          if (user.photoURL) {
+            avatarWrap.innerHTML = `<img src="${user.photoURL}" alt="${escapeHtml(displayName)}" class="w-full h-full object-cover">`;
+          } else {
+            const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ME';
+            avatarWrap.innerHTML = `<span id="sidebar-user-initials">${escapeHtml(initials)}</span>`;
+          }
+        }
+      } else {
+        if (loggedOutSec) loggedOutSec.classList.remove('hidden');
+        if (loggedInSec) loggedInSec.classList.add('hidden');
+        if (mobAuthGuest) mobAuthGuest.classList.remove('hidden');
+        if (mobAuthUser) mobAuthUser.classList.add('hidden');
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
     };
 
     // Sjekkliste
@@ -2369,6 +2515,14 @@ UGC Creator`;
 
     // Kjør oppsett ved oppstart
     window.addEventListener('DOMContentLoaded', () => {
+      const savedUser = window.loadLocalData('ugc_google_user', null);
+      if (savedUser && !savedUser.isAnonymous) {
+        window._currentUser = savedUser;
+        window.updateAuthUI(savedUser);
+        const welcomeScreen = document.getElementById('welcome-screen');
+        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+      }
+
       if (window.lucide) window.lucide.createIcons();
       renderDashboard();
       renderPipeline();
