@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="no" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UGC Creator Desk</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Plus Jakarta Sans Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fdf4ff',
+              100: '#fae8ff',
+              200: '#f5d0fe',
+              300: '#f0abfc',
+              400: '#e879f9',
+              500: '#d946ef',
+              600: '#c026d3',
+              700: '#a21caf',
+              800: '#86198f',
+              900: '#701a75',
+              accent: '#6366f1'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Tilpassede rullefelt */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.6);
+    }
+    /* Hindre at ikoner fanger museklikk */
+    svg, i {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-hidden bg-slate-950 text-slate-100 relative">
+
+  <!-- ================= VELKOMST / LANDINGSSIDE (Ligger over appen) ================= -->
+  <div id="welcome-screen" class="absolute inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-md transition-opacity duration-500">
+    <div class="relative z-10 max-w-lg w-full mx-4 px-6 py-10 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl text-center">
+      <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/30 mb-6">
+        <i data-lucide="video" class="w-10 h-10 text-white"></i>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">Velkommen til CreatorDesk <span class="text-brand-400">UGC</span></h1>
+      <p class="text-slate-400 mb-8 text-sm leading-relaxed max-w-md mx-auto">
+        Alt-i-ett plattformen for profesjonelle UGC-kreatører. Hold oversikt over oppdrag, skriv konverterende manus, beregn priser og håndter merkevarer på ett sted.
+      </p>
+
+      <div class="space-y-4 mb-8 text-left px-4 sm:px-10">
+        <div class="flex items-center gap-3 text-sm text-slate-300 font-medium">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i> Komplett CRM & Kanban Pipeline
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-300 font-medium">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i> Pris- & Pakkekalkulator
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-300 font-medium">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i> Innebygd teleprompter & manusmaler
+        </div>
+      </div>
+
+      <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm transition-all shadow-xl hover:scale-[1.02] active:scale-95 mb-3">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+          <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+          <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+        </svg>
+        Logg inn med Google
+      </button>
+
+      <button onclick="startApp()" class="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-all shadow-xl hover:scale-[1.02] active:scale-95">
+        <i data-lucide="user" class="w-5 h-5"></i>
+        Prøv som gjest (Test-modus)
+      </button>
+      
+      <p class="mt-5 text-xs text-slate-500 flex items-center justify-center gap-1.5">
+        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+        Din bruker knyttes automatisk opp mot skylagring eller lokal lagring.
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= HOVED-APP ================= -->
+  <div id="main-app" class="flex h-full w-full overflow-hidden relative z-0">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 bg-slate-900/90 border-r border-slate-800 flex flex-col justify-between hidden md:flex transition-all duration-300 z-20">
+      <div>
+        <!-- Logo / Tittel -->
+        <div class="p-6 flex items-center gap-3 border-b border-slate-800/80">
+          <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/25 flex-shrink-0">
+            <i data-lucide="video" class="w-5 h-5 text-white"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-base tracking-tight leading-tight flex items-center gap-1.5">
+              CreatorDesk <span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold border border-brand-500/30">UGC</span>
+            </h1>
+            <p class="text-xs text-slate-400">Arbeidsflate for skapere</p>
+          </div>
+        </div>
+
+        <!-- Navigasjonsknapper -->
+        <nav class="p-4 space-y-1.5">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500/10 text-brand-300 border border-brand-500/20 shadow-sm">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Oversikt</span>
+          </button>
+
+          <button onclick="switchTab('clients')" id="nav-clients" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-400 hover:text-slate-100 hover:bg-slate-800/60">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Kundeoversikt</span>
+            <span id="badge-clients-count" class="ml-auto text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">0</span>
+          </button>
+
+          <button onclick="switchTab('pipeline')" id="nav-pipeline" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-400 hover:text-slate-100 hover:bg-slate-800/60">
+            <i data-lucide="kanban" class="w-4 h-4"></i>
+            <span>Oppdrag & Pipeline</span>
+            <span id="badge-active-deals" class="ml-auto text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">0</span>
+          </button>
+
+          <button onclick="switchTab('storyboard')" id="nav-storyboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-400 hover:text-slate-100 hover:bg-slate-800/60">
+            <i data-lucide="clapperboard" class="w-4 h-4"></i>
+            <span>Manus & Hook-Builder</span>
+          </button>
+
+          <button onclick="switchTab('ratecalc')" id="nav-ratecalc" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-400 hover:text-slate-100 hover:bg-slate-800/60">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span>Priskalkulator</span>
+          </button>
+
+          <button onclick="switchTab('checklist')" id="nav-checklist" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-400 hover:text-slate-100 hover:bg-slate-800/60">
+            <i data-lucide="check-square" class="w-4 h-4"></i>
+            <span>Leveransesjekkliste</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Brukerprofil nederst i sidebaren -->
+      <div class="p-3 border-t border-slate-800/80 bg-slate-900/90 h-[72px] flex flex-col justify-center">
+        <!-- Logget ut (Gjest) -->
+        <div id="auth-logged-out-section" class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-brand-500/40 transition-all">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <button onclick="loginWithGoogle()" title="Logg inn med Google" class="w-9 h-9 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center flex-shrink-0 shadow-sm transition-transform active:scale-95 group">
+              <svg class="w-4 h-4 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+              </svg>
+            </button>
+            <div class="overflow-hidden">
+              <p class="text-xs font-bold text-slate-300 truncate">Lokal modus</p>
+              <button onclick="loginWithGoogle()" class="text-[10px] text-brand-400 hover:underline font-medium">Logg inn for sky-synk</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logget inn -->
+        <div id="auth-logged-in-section" class="hidden flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700/80 transition-all">
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            <div id="sidebar-user-avatar-wrap" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md flex-shrink-0 overflow-hidden">
+              <span id="sidebar-user-initials">ME</span>
+            </div>
+            <div class="overflow-hidden">
+              <p class="text-xs font-bold truncate text-slate-200" id="sidebar-creator-name">Min Profil</p>
+              <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Skylagring aktiv
+              </p>
+            </div>
+          </div>
+          <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800/60 transition-colors flex-shrink-0" title="Logg ut">
+            <i data-lucide="log-out" class="w-4 h-4 pointer-events-none"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Hovedinnholdsområde -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-transparent">
+      
+      <!-- Topplinje -->
+      <header class="h-16 px-6 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between flex-shrink-0 z-10">
+        <!-- Mobilmeny-trigger -->
+        <div class="flex items-center gap-3">
+          <div class="md:hidden flex items-center gap-2">
+            <button onclick="toggleMobileNav()" class="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
+              <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            <span class="font-bold text-sm tracking-tight text-brand-300">CreatorDesk</span>
+          </div>
+
+          <div class="hidden md:flex items-center gap-2 text-xs text-slate-400">
+            <span id="header-breadcrumb" class="font-medium text-slate-200 text-sm">Oversikt & Nøkkeltall</span>
+          </div>
+        </div>
+
+        <!-- Handlinger i toppen -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button onclick="exportToCSV()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition-all" title="Eksporter oppdrag til CSV / Excel">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Eksporter CSV</span>
+          </button>
+          <button onclick="openModal('deal-modal')" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-medium text-xs shadow-md shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Nytt UGC-oppdrag</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Mobil Nav Dropdown -->
+      <div id="mobile-nav" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 py-3 space-y-2">
+        <button onclick="switchTab('dashboard'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Oversikt</button>
+        <button onclick="switchTab('clients'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Kundeoversikt</button>
+        <button onclick="switchTab('pipeline'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Pipeline & Prosjekter</button>
+        <button onclick="switchTab('storyboard'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Manus & Hook-Builder</button>
+        <button onclick="switchTab('ratecalc'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Priskalkulator</button>
+        <button onclick="switchTab('checklist'); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-slate-200 hover:bg-slate-800">Leveransesjekkliste</button>
+        
+        <div id="mobile-auth-guest" class="pt-2 mt-2 border-t border-slate-800">
+            <button onclick="loginWithGoogle(); toggleMobileNav();" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white text-slate-900 text-sm font-bold hover:bg-slate-100">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                  <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+                  <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+                </svg>
+                Logg inn med Google
+            </button>
+        </div>
+        <div id="mobile-auth-user" class="hidden pt-2 mt-2 border-t border-slate-800">
+            <button onclick="handleLogout(); toggleMobileNav();" class="block w-full text-left py-2 px-3 rounded-lg text-sm text-rose-400 font-bold hover:bg-slate-800">Logg ut</button>
+        </div>
+      </div>
+
+      <!-- Innholdsområde for fanene -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+        <!-- ======================= TAB 1: OVERSIKT (DASHBOARD) ======================= -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+          
+          <!-- Banner -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-900/40 via-indigo-900/30 to-slate-900/50 border border-brand-500/20 p-6 sm:p-8 shadow-xl">
+            <div class="relative z-10 max-w-2xl">
+              <span class="inline-block px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-semibold mb-3">
+                Din UGC Arbeidsflate
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                Klar for dagens opptak? 🎬
+              </h2>
+              <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                Ha full oversikt over merkevare-leads, innspillinger, storyboard og fakturering for dine UGC-prosjekter.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <button onclick="switchTab('storyboard')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2">
+                  <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i> Skriv nytt manus
+                </button>
+                <button onclick="switchTab('pipeline')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all flex items-center gap-2">
+                  <i data-lucide="list-ordered" class="w-3.5 h-3.5"></i> Se aktive oppdrag
+                </button>
+              </div>
+            </div>
+            <div class="absolute right-0 bottom-0 translate-x-6 translate-y-6 opacity-10 pointer-events-none hidden lg:block">
+              <i data-lucide="video" class="w-80 h-80 text-brand-400"></i>
+            </div>
+          </div>
+
+          <!-- KPI-kort -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm hover:border-slate-700/80 transition-all">
+              <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Pipeline-verdi</span>
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                  <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="text-2xl font-black text-white" id="kpi-pipeline-val">0 kr</div>
+              <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                <span class="text-emerald-400 font-medium" id="kpi-active-deals-count">0 oppdrag</span> i omløp
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm hover:border-slate-700/80 transition-all">
+              <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Fakturert / Fullført</span>
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                  <i data-lucide="wallet" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="text-2xl font-black text-emerald-400" id="kpi-won-val">0 kr</div>
+              <p class="text-xs text-slate-400 mt-1">Fullførte avtaler</p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm hover:border-slate-700/80 transition-all">
+              <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Venter på opptak</span>
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                  <i data-lucide="camera" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="text-2xl font-black text-amber-300" id="kpi-filming-count">0</div>
+              <p class="text-xs text-slate-400 mt-1">Vare mottatt & manus klart</p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm hover:border-slate-700/80 transition-all">
+              <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Snittpris per video</span>
+                <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="text-2xl font-black text-brand-300" id="kpi-avg-rate">0 kr</div>
+              <p class="text-xs text-slate-400 mt-1">Per registrerte video</p>
+            </div>
+
+          </div>
+
+          <!-- To-kolonners visning -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Liste over aktive leveranser -->
+            <div class="lg:col-span-2 rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-brand-400"></i> Nærmeste frister & leveranser
+                  </h3>
+                  <p class="text-xs text-slate-400">Oppdrag som krever din oppmerksomhet</p>
+                </div>
+                <button onclick="switchTab('pipeline')" class="text-xs text-brand-400 hover:text-brand-300 font-medium">Se alle &rarr;</button>
+              </div>
+
+              <div id="dashboard-urgent-list" class="space-y-2.5">
+                <!-- Dynamisk fylt via JS -->
+              </div>
+            </div>
+
+            <!-- Hook generator -->
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-sm text-slate-100 flex items-center gap-2 mb-2">
+                  <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Dagens UGC Hook-inspirasjon
+                </h3>
+                <p class="text-xs text-slate-400 mb-4">Stopp tommelen i feeden de første 3 sekundene.</p>
+                
+                <div id="random-hook-box" class="p-4 rounded-xl bg-slate-950/70 border border-slate-800 text-slate-200 text-xs italic font-medium leading-relaxed min-h-[90px] flex items-center justify-center text-center">
+                  "Jeg prøvde det virale produktet alle snakker om, slik at du slipper..."
+                </div>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-slate-800/60 flex gap-2">
+                <button onclick="generateRandomHook()" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Ny formel
+                </button>
+                <button onclick="copyCurrentHook()" class="px-3 py-2 rounded-xl bg-brand-600/30 hover:bg-brand-600/50 text-brand-300 border border-brand-500/30 text-xs font-medium transition-all" title="Kopier hook">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ======================= TAB 2: KUNDEOVERSIKT ======================= -->
+        <section id="tab-clients" class="tab-content hidden space-y-6">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <i data-lucide="users" class="w-5 h-5 text-brand-400"></i> Kundeoversikt & CRM
+              </h2>
+              <p class="text-xs text-slate-400">Komplett oversikt over merkevarer, kontaktpersoner og historikk.</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input type="text" id="client-search" oninput="renderClientsView()" placeholder="Søk kunde, kontakt..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-brand-500 w-48 sm:w-64">
+              <button onclick="openModal('brand-modal')" class="px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-all">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Ny kunde
+              </button>
+            </div>
+          </div>
+
+          <!-- Nøkkeltall Kunder -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-4 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold">
+                <i data-lucide="building" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400">Totalt antall kunder</p>
+                <p class="text-xl font-black text-white" id="stat-total-clients">0</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-4 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                <i data-lucide="repeat" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400">Gjentakende (Retainers)</p>
+                <p class="text-xl font-black text-emerald-400" id="stat-repeat-clients">0</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-4 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold">
+                <i data-lucide="coins" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400">Total inntjent fra kunder</p>
+                <p class="text-xl font-black text-indigo-300" id="stat-clients-revenue">0 kr</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rutenett med kunder -->
+          <div id="clients-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Fylles dynamisk -->
+          </div>
+
+        </section>
+
+
+        <!-- ======================= TAB 3: PIPELINE & OPPDRAG ======================= -->
+        <section id="tab-pipeline" class="tab-content hidden space-y-6">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <i data-lucide="kanban" class="w-5 h-5 text-brand-400"></i> Oppdrags-Pipeline (Kanban)
+              </h2>
+              <p class="text-xs text-slate-400">Følg hvert samarbeid fra første merkevarekontakt til utbetaling.</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input type="text" id="pipeline-search" oninput="renderPipeline()" placeholder="Søk i oppdrag..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-brand-500 w-48 sm:w-60">
+              <button onclick="openModal('deal-modal')" class="px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-all">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Legg til oppdrag
+              </button>
+            </div>
+          </div>
+
+          <!-- Kolonner -->
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto pb-4 items-start min-h-[500px]">
+            
+            <!-- Lead -->
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3.5 flex flex-col min-h-[350px]">
+              <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                  <span class="text-xs font-bold text-slate-300">1. Pitch / Lead</span>
+                </div>
+                <span id="col-count-lead" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">0</span>
+              </div>
+              <div id="col-lead" class="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'lead')"></div>
+            </div>
+
+            <!-- Scripting -->
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3.5 flex flex-col min-h-[350px]">
+              <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+                  <span class="text-xs font-bold text-slate-300">2. Vare sendt / Manus</span>
+                </div>
+                <span id="col-count-scripting" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">0</span>
+              </div>
+              <div id="col-scripting" class="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'scripting')"></div>
+            </div>
+
+            <!-- Filming -->
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3.5 flex flex-col min-h-[350px]">
+              <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span class="text-xs font-bold text-slate-300">3. Filming & Klipp</span>
+                </div>
+                <span id="col-count-filming" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">0</span>
+              </div>
+              <div id="col-filming" class="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'filming')"></div>
+            </div>
+
+            <!-- Review -->
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3.5 flex flex-col min-h-[350px]">
+              <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                  <span class="text-xs font-bold text-slate-300">4. Korrektur</span>
+                </div>
+                <span id="col-count-review" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">0</span>
+              </div>
+              <div id="col-review" class="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'review')"></div>
+            </div>
+
+            <!-- Paid -->
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3.5 flex flex-col min-h-[350px]">
+              <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                  <span class="text-xs font-bold text-slate-300">5. Godkjent & Betalt</span>
+                </div>
+                <span id="col-count-paid" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">0</span>
+              </div>
+              <div id="col-paid" class="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'paid')"></div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ======================= TAB 4: STORYBOARD ======================= -->
+        <section id="tab-storyboard" class="tab-content hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <i data-lucide="clapperboard" class="w-5 h-5 text-brand-400"></i> UGC Storyboard & Rammeverk
+              </h2>
+              <p class="text-xs text-slate-400">Strukturer en 9:16 video (Hook ➔ Problem ➔ Løsning ➔ CTA)</p>
+            </div>
+            
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="loadScriptTemplate('problem-solution')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700">
+                Mal: Problem-Løsning
+              </button>
+              <button onclick="loadScriptTemplate('unboxing-review')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700">
+                Mal: Test / Anmeldelse
+              </button>
+              <button onclick="clearScript()" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-medium">
+                Tøm
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Venstre: Byggeklosser -->
+            <div class="lg:col-span-2 space-y-4">
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1">Merkevare / Produkt</label>
+                  <input type="text" id="script-brand-input" oninput="updatePrompterPreview()" placeholder="f.eks. GlowSkin Ansiktsserum" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1">Målgruppe</label>
+                  <input type="text" id="script-target-input" oninput="updatePrompterPreview()" placeholder="f.eks. Jenter 20-30 med tørr hud" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                </div>
+              </div>
+
+              <!-- Hook -->
+              <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-md bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-black">1</span>
+                    HOOK (0 - 3 sekunder) • Stopp scrollingen
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Tale / Manus:</span>
+                    <textarea id="sb-hook-voice" oninput="updatePrompterPreview()" rows="2" placeholder="&quot;Hvis du også sliter med tørr hud hver vinter, MÅ du se dette...&quot;" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Visuelt / B-roll:</span>
+                    <textarea id="sb-hook-visual" oninput="updatePrompterPreview()" rows="2" placeholder="Nærbilde av flassende kinn, peker på kameraet." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Problem -->
+              <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-sky-400 flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-md bg-sky-500/20 text-sky-300 flex items-center justify-center text-[10px] font-black">2</span>
+                    PROBLEMET (3 - 10 sekunder)
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Tale / Manus:</span>
+                    <textarea id="sb-prob-voice" oninput="updatePrompterPreview()" rows="2" placeholder="&quot;Jeg har brukt tusenvis på dyre kremer som bare la seg som et fettlag.&quot;" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Visuelt:</span>
+                    <textarea id="sb-prob-visual" oninput="updatePrompterPreview()" rows="2" placeholder="Kaster gamle krukker i søpla, frustrert sukk i speilet." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Løsning -->
+              <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-brand-400 flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-md bg-brand-500/20 text-brand-300 flex items-center justify-center text-[10px] font-black">3</span>
+                    LØSNINGEN & DEMO (10 - 22 sekunder)
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Tale / Manus:</span>
+                    <textarea id="sb-sol-voice" oninput="updatePrompterPreview()" rows="2" placeholder="&quot;Dette serumet trekker inn på 10 sekunder og gir fukt hele dagen.&quot;" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Visuelt:</span>
+                    <textarea id="sb-sol-visual" oninput="updatePrompterPreview()" rows="2" placeholder="Pipette på kinnet, glød i naturlig lys." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA -->
+              <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px] font-black">4</span>
+                    CALL TO ACTION (22 - 30 sekunder)
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Tale / Manus:</span>
+                    <textarea id="sb-cta-voice" oninput="updatePrompterPreview()" rows="2" placeholder="&quot;Trykk på lenken under for 20% rabatt i dag!&quot;" class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium block mb-1">Visuelt:</span>
+                    <textarea id="sb-cta-visual" oninput="updatePrompterPreview()" rows="2" placeholder="Holder produktet frem mot kamera, smiler." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200"></textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Høyre: Prompter -->
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                    <i data-lucide="scroll" class="w-4 h-4 text-brand-400"></i> Opplesningsmodus (Prompter)
+                  </h3>
+                  <button onclick="updatePrompterPreview()" class="text-xs text-brand-400 hover:text-brand-300 font-semibold">Oppdater</button>
+                </div>
+                
+                <div id="prompter-display" class="p-4 rounded-xl bg-black border border-slate-800 text-slate-100 text-sm leading-relaxed overflow-y-auto max-h-[380px] font-mono whitespace-pre-wrap select-all">
+                  Trykk "Oppdater" for å generere et samlet manus.
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-800 flex gap-2">
+                  <button onclick="copyPrompterText()" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Kopier manus
+                  </button>
+                  <button onclick="saveCurrentScriptAsNote()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5" title="Lagre idé">
+                    <i data-lucide="bookmark" class="w-3.5 h-3.5"></i> Lagre
+                  </button>
+                </div>
+              </div>
+
+              <!-- Lagrede manus -->
+              <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-4">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <i data-lucide="folder" class="w-3.5 h-3.5 text-brand-400"></i> Lagrede manus-skisser
+                </h4>
+                <div id="saved-scripts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1">
+                  <!-- Dynamisk lagret -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ======================= TAB 5: PRISKALKULATOR ======================= -->
+        <section id="tab-ratecalc" class="tab-content hidden space-y-6">
+          <div class="max-w-4xl mx-auto space-y-6">
+            
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <i data-lucide="calculator" class="w-5 h-5 text-brand-400"></i> UGC Pris- og Tilbudskalkulator
+              </h2>
+              <p class="text-xs text-slate-400">Beregn priser inkludert annonserettigheter (Usage Rights) og tillegg.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              <!-- Parametere -->
+              <div class="md:col-span-2 rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-5">
+                
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">Antall ferdige videoer</label>
+                  <div class="flex items-center gap-3">
+                    <input type="range" id="calc-video-count" min="1" max="10" value="1" oninput="calculateRates()" class="flex-1 accent-brand-500">
+                    <span id="calc-video-count-lbl" class="font-bold text-sm w-12 text-center px-2 py-1 rounded-lg bg-slate-800 text-brand-300 border border-slate-700">1 stk</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Basispris per video (NOK)</label>
+                    <input type="number" id="calc-base-rate" value="2500" step="100" oninput="calculateRates()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Ekstra Hooks (A/B testing)</label>
+                    <select id="calc-extra-hooks" onchange="calculateRates()" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200">
+                      <option value="0">Ingen ekstra hooks (+0 kr)</option>
+                      <option value="400">1 ekstra hook (+400 kr)</option>
+                      <option value="750">2 ekstra hooks (+750 kr)</option>
+                      <option value="1000">3 ekstra hooks (+1 000 kr)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800">
+                  <h4 class="text-xs font-bold text-slate-200 mb-2">Bruksrettigheter (Paid Ads / Usage Rights)</h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-950/80 border border-slate-800 cursor-pointer">
+                      <input type="radio" name="usage-rights" value="0" checked onchange="calculateRates()" class="accent-brand-500">
+                      <span class="text-xs text-slate-300">Organisk (+0%)</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-950/80 border border-slate-800 cursor-pointer">
+                      <input type="radio" name="usage-rights" value="0.30" onchange="calculateRates()" class="accent-brand-500">
+                      <span class="text-xs text-slate-300">30 dager Ads (+30%)</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-950/80 border border-slate-800 cursor-pointer">
+                      <input type="radio" name="usage-rights" value="0.60" onchange="calculateRates()" class="accent-brand-500">
+                      <span class="text-xs text-slate-300">90 dager Ads (+60%)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800">
+                  <h4 class="text-xs font-bold text-slate-200 mb-2">Tilleggstjenester</h4>
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                      <input type="checkbox" id="calc-addon-raw" onchange="calculateRates()" class="rounded bg-slate-900 border-slate-700 text-brand-500">
+                      <span>Råmateriale levert (+800 kr)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                      <input type="checkbox" id="calc-addon-rush" onchange="calculateRates()" class="rounded bg-slate-900 border-slate-700 text-brand-500">
+                      <span>Ekspresslevering 48 timer (+1 200 kr)</span>
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Output -->
+              <div class="rounded-2xl bg-gradient-to-b from-slate-900 to-indigo-950/40 border border-brand-500/30 p-6 flex flex-col justify-between shadow-xl">
+                <div>
+                  <span class="text-[11px] font-bold text-brand-400 uppercase tracking-wider block mb-1">Estimert tilbud</span>
+                  <div class="text-4xl font-extrabold text-white mb-4" id="calc-total-display">2 500 kr</div>
+
+                  <div class="space-y-2 text-xs text-slate-300 border-t border-slate-800 pt-4">
+                    <div class="flex justify-between">
+                      <span class="text-slate-400">Basisvideoer:</span>
+                      <span class="font-medium text-slate-200" id="cb-base">2 500 kr</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-slate-400">Ekstra hooks:</span>
+                      <span class="font-medium text-slate-200" id="cb-hooks">0 kr</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-slate-400">Annonsebruk:</span>
+                      <span class="font-medium text-slate-200" id="cb-rights">0 kr</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-slate-400">Tillegg:</span>
+                      <span class="font-medium text-slate-200" id="cb-addons">0 kr</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-6 space-y-2">
+                  <button onclick="copyQuoteEmail()" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="mail" class="w-3.5 h-3.5"></i> Kopier tilbudse-post
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ======================= TAB 6: SJEKKLISTE ======================= -->
+        <section id="tab-checklist" class="tab-content hidden space-y-6">
+          <div class="max-w-3xl mx-auto space-y-6">
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                  <i data-lucide="check-square" class="w-5 h-5 text-brand-400"></i> Leveransesjekkliste for video
+                </h2>
+                <p class="text-xs text-slate-400">Unngå revisjoner og lever profesjonelt.</p>
+              </div>
+              <button onclick="resetChecklist()" class="text-xs text-slate-400 hover:text-slate-200">Nullstill sjekker</button>
+            </div>
+
+            <div class="rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-4">
+              
+              <div class="space-y-3" id="checklist-items-container">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-1" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-1" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">Linsene er tørket av! (Clean lens check)</span>
+                    <span class="text-[11px] text-slate-400">Tørk mobil-linsen før filming for skarpt bilde uten lysslør.</span>
+                  </label>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-2" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-2" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">Klar og tydelig lyd (Ingen ekko)</span>
+                    <span class="text-[11px] text-slate-400">Bruk mygg eller film i et rom uten klang.</span>
+                  </label>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-3" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-3" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">Trygge soner (Safe Zones) for TikTok / Reels</span>
+                    <span class="text-[11px] text-slate-400">Tekst og ansikt er ikke skjult av knapper eller bunntekst.</span>
+                  </label>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-4" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-4" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">Undertekster uten skrivefeil</span>
+                    <span class="text-[11px] text-slate-400">Merkevarenavnet og produktet er stavet 100% nøyaktig.</span>
+                  </label>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-5" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-5" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">Ingen copyright-musikk i eksport</span>
+                    <span class="text-[11px] text-slate-400">Lever uten musikk eller med lisensiert bakgrunnslyd.</span>
+                  </label>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                  <input type="checkbox" id="chk-6" onchange="saveChecklistState()" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 h-4 w-4">
+                  <label for="chk-6" class="cursor-pointer">
+                    <span class="text-xs font-semibold text-slate-200 block">4K / 1080p i 9:16 vertikalt format</span>
+                    <span class="text-[11px] text-slate-400">Eksport i H.264 / MP4 med høy bitrate.</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Prosent -->
+              <div class="pt-4 border-t border-slate-800">
+                <div class="flex justify-between text-xs mb-1.5 font-medium">
+                  <span class="text-slate-400">Kvalitetsstatus:</span>
+                  <span id="checklist-progress-text" class="text-brand-300 font-bold">0 / 6 fullført</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-950 overflow-hidden border border-slate-800">
+                  <div id="checklist-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-indigo-500 transition-all duration-300 w-0"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ======================= MODALER ======================= -->
+
+  <!-- Modal: Oppdrag -->
+  <div id="deal-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-white flex items-center gap-2">
+          <i data-lucide="video" class="w-4 h-4 text-brand-400"></i> <span id="deal-modal-title">Nytt UGC-oppdrag</span>
+        </h3>
+        <button onclick="closeModal('deal-modal')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="deal-form" onsubmit="saveDeal(event)" class="space-y-3.5">
+        <input type="hidden" id="deal-id">
+        
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Merkevare / Bedrift *</label>
+          <input type="text" id="deal-brand" required placeholder="f.eks. NordicGlow, Gymgrossisten..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Produkt</label>
+            <input type="text" id="deal-product" placeholder="f.eks. Fuktighetskrem" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Pris (NOK) *</label>
+            <input type="number" id="deal-price" required placeholder="3500" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Status / Fase</label>
+            <select id="deal-status" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500">
+              <option value="lead">1. Pitch / Lead</option>
+              <option value="scripting">2. Vare sendt / Manus</option>
+              <option value="filming">3. Filming & Klipp</option>
+              <option value="review">4. Korrektur</option>
+              <option value="paid">5. Godkjent & Betalt</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Leveringsfrist</label>
+            <input type="date" id="deal-deadline" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Notater / Instrukser</label>
+          <textarea id="deal-notes" rows="2" placeholder="F.eks. 1x video (30s) + 2 hooks. Ønsker fokus på unboxing..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('deal-modal')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300">Avbryt</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all">Lagre oppdrag</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal: Registrer Kunde -->
+  <div id="brand-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-white flex items-center gap-2">
+          <i data-lucide="building" class="w-4 h-4 text-brand-400"></i> <span id="brand-modal-title">Ny Kunde / Merkevare</span>
+        </h3>
+        <button onclick="closeModal('brand-modal')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="brand-form" onsubmit="saveBrand(event)" class="space-y-3.5">
+        <input type="hidden" id="bm-id">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Merkevarenavn *</label>
+          <input type="text" id="bm-name" required placeholder="f.eks. PureSkin Nordic" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Nisje / Kategori</label>
+            <input type="text" id="bm-category" placeholder="f.eks. Hudpleie, Mote" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Betalingsbetingelse</label>
+            <select id="bm-terms" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+              <option value="14 dager">Netto 14 dager</option>
+              <option value="30 dager">Netto 30 dager</option>
+              <option value="Forskudd 50%">50% Forskudd</option>
+              <option value="Ved levering">Ved godkjenning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Kontaktperson</label>
+            <input type="text" id="bm-contact" placeholder="Navn (f.eks. Sara)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">E-post</label>
+            <input type="email" id="bm-email" placeholder="sara@merke.no" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Telefon</label>
+            <input type="text" id="bm-phone" placeholder="+47 900 00 000" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Nettside</label>
+            <input type="text" id="bm-website" placeholder="www.merke.no" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Notater om kunden</label>
+          <textarea id="bm-notes" rows="2" placeholder="Foretrekker raske reels, god betaler..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('brand-modal')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300">Avbryt</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold">Lagre kunde</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal: Kundedetaljer (Deep Dive) -->
+  <div id="client-detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <div id="cd-avatar" class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold text-sm">
+            CU
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white" id="cd-name">Merkevarenavn</h3>
+            <span id="cd-category" class="text-xs text-brand-400">Kategori</span>
+          </div>
+        </div>
+        <button onclick="closeModal('client-detail-modal')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="space-y-2 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+          <span class="text-slate-400 block font-semibold uppercase text-[10px]">Kontaktinformasjon</span>
+          <p><strong class="text-slate-300">Kontaktperson:</strong> <span id="cd-contact" class="text-slate-200"></span></p>
+          <p><strong class="text-slate-300">E-post:</strong> <span id="cd-email" class="text-slate-200"></span></p>
+          <p><strong class="text-slate-300">Telefon:</strong> <span id="cd-phone" class="text-slate-200"></span></p>
+          <p><strong class="text-slate-300">Nettside:</strong> <span id="cd-website" class="text-slate-200"></span></p>
+        </div>
+        <div class="space-y-2 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+          <span class="text-slate-400 block font-semibold uppercase text-[10px]">Samarbeidsvilkår</span>
+          <p><strong class="text-slate-300">Betalingsbetingelse:</strong> <span id="cd-terms" class="text-slate-200"></span></p>
+          <p><strong class="text-slate-300">Registrerte oppdrag:</strong> <span id="cd-deals-count" class="text-slate-200"></span></p>
+          <p><strong class="text-slate-300">Total inntjening:</strong> <span id="cd-total-value" class="text-emerald-400 font-bold"></span></p>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider block">Merkevarenotat & Krav</span>
+        <div id="cd-notes" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed italic"></div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Oppdragshistorikk</span>
+          <button onclick="createDealForCurrentClient()" class="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Nytt oppdrag for kunden
+          </button>
+        </div>
+        <div id="cd-deals-list" class="max-h-40 overflow-y-auto space-y-2 pr-1"></div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+        <button id="cd-edit-btn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200">Rediger kunde</button>
+        <button onclick="closeModal('client-detail-modal')" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-bold text-white">Lukk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Melding -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 border border-brand-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+      <div class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></div>
+      <span id="toast-msg" class="text-xs font-medium">Melding</span>
+    </div>
+  </div>
+
+
+  <!-- ======================= FIREBASE MODUL & AUTENTISERING ======================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithCustomToken, 
+      signInAnonymously, 
+      signInWithPopup,
+      GoogleAuthProvider,
+      signOut, 
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      deleteDoc, 
+      collection, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ugc-creator-desk-app';
+    const hasCustomConfig = typeof __firebase_config !== 'undefined';
+    const firebaseConfig = hasCustomConfig 
+      ? JSON.parse(__firebase_config) 
+      : {
+          apiKey: "AIzaSyDummyFallbackKey",
+          authDomain: "ugc-desk.firebaseapp.com",
+          projectId: "ugc-desk",
+          storageBucket: "ugc-desk.appspot.com",
+          messagingSenderId: "12345678",
+          appId: "1:12345678:web:123456"
+        };
+
+    let app = null;
+    let auth = null;
+    let db = null;
+    let googleProvider = null;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      googleProvider = new GoogleAuthProvider();
+    } catch (e) {
+      console.warn("Firebase-initialisering kjører i lokal offline-modus:", e);
+    }
+
+    let unsubscribeDeals = null;
+    let unsubscribeBrands = null;
+    let unsubscribeScripts = null;
+
+    // Start autentisering
+    async function initAuth() {
+      if (!auth) return;
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else if (hasCustomConfig) {
+          if (!auth.currentUser) {
+            await signInAnonymously(auth);
+          }
+        }
+      } catch (err) {
+        console.warn("Autentisering falt tilbake til lokal modus:", err);
+      }
+    }
+
+    // Google Login Funksjon
+    window.loginWithGoogle = async function() {
+      if (!auth || !googleProvider) {
+        if (window.showToast) window.showToast("Kjører i lokal test-modus. All data lagres trygt på maskinen din.");
+        window.startApp();
+        return;
+      }
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        if (window.showToast) window.showToast(`Velkommen inn, ${result.user.displayName}!`);
+        window.startApp();
+      } catch (error) {
+        console.error("Google auth error:", error);
+        if (window.showToast) {
+          if (error.code === 'auth/popup-blocked') {
+            window.showToast("Popup blokkert! Vennligst tillat popups for dette nettstedet, eller velg 'Prøv som gjest'.");
+          } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid') {
+            window.showToast("Lokal test-modus aktiv (uten ekstern sky-tilkobling). Data lagres lokalt!");
+            window.startApp();
+          } else {
+            window.showToast("Innlogging avbrutt – du kan fortsette i lokal modus.");
+          }
+        }
+      }
+    };
+
+    // Start-knapp fra velkomstskjermen (Gjest / Lokal modus)
+    window.startApp = function() {
+      const welcomeScreen = document.getElementById('welcome-screen');
+      if (welcomeScreen) welcomeScreen.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+      }, 500);
+      if (window.showToast) window.showToast('Velkommen til arbeidsflaten!');
+    };
+
+    // Logg ut
+    window.handleLogout = async function() {
+      if (!auth) return;
+      try {
+        await signOut(auth);
+        if (window.showToast) window.showToast("Logget ut. Kjører nå i lokal modus.");
+      } catch (err) {
+        console.error("Feil ved utlogging:", err);
+      }
+    };
+
+    // Lytter på innloggingsstatus
+    if (auth) {
+      onAuthStateChanged(auth, (user) => {
+        window._currentUser = user;
+        updateAuthUI(user);
+
+        if (user && !user.isAnonymous) {
+          setupUserListeners(user.uid);
+        } else {
+          teardownListeners();
+        }
+      });
+    }
+
+    function updateAuthUI(user) {
+      const nameEl = document.getElementById('sidebar-creator-name');
+      const avatarWrap = document.getElementById('sidebar-user-avatar-wrap');
+      const initialsEl = document.getElementById('sidebar-user-initials');
+      const loggedOutSec = document.getElementById('auth-logged-out-section');
+      const loggedInSec = document.getElementById('auth-logged-in-section');
+      const mobAuthGuest = document.getElementById('mobile-auth-guest');
+      const mobAuthUser = document.getElementById('mobile-auth-user');
+
+      if (user && !user.isAnonymous) {
+        if (loggedOutSec) loggedOutSec.classList.add('hidden');
+        if (loggedInSec) loggedInSec.classList.remove('hidden');
+        if (mobAuthGuest) mobAuthGuest.classList.add('hidden');
+        if (mobAuthUser) mobAuthUser.classList.remove('hidden');
+
+        const displayName = user.displayName || 'Min Profil';
+        if (nameEl) nameEl.innerText = displayName;
+
+        if (user.photoURL && avatarWrap) {
+          avatarWrap.innerHTML = `<img src="${user.photoURL}" alt="${displayName}" class="w-full h-full object-cover">`;
+        } else if (initialsEl) {
+          const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'ME';
+          initialsEl.innerText = initials;
+        }
+
+        const welcomeScreen = document.getElementById('welcome-screen');
+        if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
+          window.startApp();
+        }
+      } else {
+        if (loggedOutSec) loggedOutSec.classList.remove('hidden');
+        if (loggedInSec) loggedInSec.classList.add('hidden');
+        if (mobAuthGuest) mobAuthGuest.classList.remove('hidden');
+        if (mobAuthUser) mobAuthUser.classList.add('hidden');
+        
+        if (initialsEl) initialsEl.innerText = 'LM';
+        if (nameEl) nameEl.innerText = 'Lokal modus';
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // Sanntids synkronisering av brukerens skydata dersom innlogget
+    function setupUserListeners(userId) {
+      if (!db) return;
+      teardownListeners();
+
+      const dealsCol = collection(db, 'artifacts', appId, 'users', userId, 'deals');
+      const brandsCol = collection(db, 'artifacts', appId, 'users', userId, 'brands');
+      const scriptsCol = collection(db, 'artifacts', appId, 'users', userId, 'scripts');
+
+      unsubscribeDeals = onSnapshot(dealsCol, (snapshot) => {
+        if (!snapshot.empty) {
+          const fetchedDeals = [];
+          snapshot.forEach(docSnap => {
+            fetchedDeals.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          window._deals = fetchedDeals;
+          window.saveLocalData('ugc_deals', window._deals);
+          if (window.renderDashboard) window.renderDashboard();
+          if (window.renderPipeline) window.renderPipeline();
+          if (window.renderClientsView) window.renderClientsView();
+        }
+      }, (err) => console.warn("Sky-oppdrag synk info:", err.message));
+
+      unsubscribeBrands = onSnapshot(brandsCol, (snapshot) => {
+        if (!snapshot.empty) {
+          const fetchedBrands = [];
+          snapshot.forEach(docSnap => {
+            fetchedBrands.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          window._brands = fetchedBrands;
+          window.saveLocalData('ugc_brands', window._brands);
+          if (window.renderDashboard) window.renderDashboard();
+          if (window.renderClientsView) window.renderClientsView();
+        }
+      }, (err) => console.warn("Sky-kunder synk info:", err.message));
+
+      unsubscribeScripts = onSnapshot(scriptsCol, (snapshot) => {
+        if (!snapshot.empty) {
+          const fetchedScripts = [];
+          snapshot.forEach(docSnap => {
+            fetchedScripts.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          window._savedScripts = fetchedScripts;
+          window.saveLocalData('ugc_scripts', window._savedScripts);
+          if (window.renderSavedScriptsList) window.renderSavedScriptsList();
+        }
+      }, (err) => console.warn("Sky-manus synk info:", err.message));
+    }
+
+    function teardownListeners() {
+      if (unsubscribeDeals) { unsubscribeDeals(); unsubscribeDeals = null; }
+      if (unsubscribeBrands) { unsubscribeBrands(); unsubscribeBrands = null; }
+      if (unsubscribeScripts) { unsubscribeScripts(); unsubscribeScripts = null; }
+    }
+
+    // Sky-synkronisering (hvis innlogget)
+    window.dbSaveDeal = async function(dealData) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const dealId = String(dealData.id || ('d_' + Date.now()));
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'deals', dealId);
+        await setDoc(docRef, { ...dealData, id: dealId, updatedAt: new Date().toISOString() }, { merge: true });
+        return true;
+      } catch (e) {
+        console.warn("Skylagring ikke tilgjengelig, bruker lokal lagring:", e);
+        return false;
+      }
+    };
+
+    window.dbDeleteDeal = async function(dealId) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'deals', String(dealId));
+        await deleteDoc(docRef);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    window.dbSaveBrand = async function(brandData) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const brandId = String(brandData.id || ('b_' + Date.now()));
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'brands', brandId);
+        await setDoc(docRef, { ...brandData, id: brandId, updatedAt: new Date().toISOString() }, { merge: true });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    window.dbDeleteBrand = async function(brandId) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'brands', String(brandId));
+        await deleteDoc(docRef);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    window.dbSaveScript = async function(scriptData) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const scriptId = String(scriptData.id || ('s_' + Date.now()));
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'scripts', scriptId);
+        await setDoc(docRef, { ...scriptData, id: scriptId, createdAt: new Date().toISOString() }, { merge: true });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    window.dbDeleteScript = async function(scriptId) {
+      if (!auth || !auth.currentUser || auth.currentUser.isAnonymous || !db) return false;
+      try {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'scripts', String(scriptId));
+        await deleteDoc(docRef);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    initAuth();
+  </script>
+
+  <!-- ======================= APPLIKASJONSLOGIKK & BRUKERGRENSESNITT ======================= -->
+  <script>
+    // Lokale lagringshjelpere
+    window.loadLocalData = function(key, fallback) {
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return fallback;
+    };
+
+    window.saveLocalData = function(key, data) {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (e) {}
+    };
+
+    // Standard data dersom ingen data finnes
+    const defaultDeals = [
+      { id: '1', brand: 'GlowSkin Nordic', product: 'Vitamin C Serum (30s)', price: 3200, status: 'filming', deadline: '2026-11-14', notes: 'Fokus på glød og morgenrutine.' },
+      { id: '2', brand: 'ActiveBoost', product: 'Elektrolytter Test', price: 2800, status: 'scripting', deadline: '2026-11-18', notes: '3 hooks for TikTok ads.' },
+      { id: '3', brand: 'CozyHome', product: 'Duftlys ASMR', price: 4000, status: 'paid', deadline: '2026-11-02', notes: 'Godkjent og fullført.' }
+    ];
+
+    const defaultBrands = [
+      { id: 'b1', name: 'GlowSkin Nordic', category: 'Hudpleie', contact: 'Emma H.', email: 'emma@glowskin.no', phone: '+47 912 34 567', website: 'glowskin.no', terms: '14 dager', notes: 'Liker naturlig dagslys og rene bilder.' },
+      { id: 'b2', name: 'ActiveBoost', category: 'Trening & Helse', contact: 'Markus T.', email: 'markus@activeboost.com', phone: '+47 987 65 432', website: 'activeboost.com', terms: 'Ved levering', notes: 'Hurtig tempo, musikk tilpasset trening.' }
+    ];
+
+    const defaultScripts = [
+      { 
+        id: 's1', 
+        title: 'GlowSkin - Problem/Løsning', 
+        date: '08. nov',
+        brand: 'GlowSkin Ansiktsserum',
+        target: 'Jenter 20-30 med tørr hud',
+        hookVoice: 'Tre grunner til at jeg byttet ut alle mine dyre kremer med denne...',
+        hookVisual: 'Holder opp kremen mot linsen, zoom-in.',
+        probVoice: 'Hver vinter flasser huden min, og vanlige kremer føltes bare tunge.',
+        probVisual: 'Peker på tørre partier i ansiktet foran speilet.',
+        solVoice: 'Denne trekker inn på under et minutt og holder hele dagen med ceramider.',
+        solVisual: 'Smører på kinnet, viser en naturlig glød.',
+        ctaVoice: 'De har 20% lanseringsrabatt nå. Trykk lenken under før det er tomt!',
+        ctaVisual: 'Peker ned mot knappen med produktet.'
+      }
+    ];
+
+    window._deals = window.loadLocalData('ugc_deals', defaultDeals);
+    window._brands = window.loadLocalData('ugc_brands', defaultBrands);
+    window._savedScripts = window.loadLocalData('ugc_scripts', defaultScripts);
+
+    window.HOOK_IDEAS = [
+      "Tre grunner til at jeg kastet min vanlige hudkrem...",
+      "TikTok fikk meg til å kjøpe dette, og her er min ærlige mening...",
+      "Hvis du også sliter med [problem], må du se dette før du bruker mer penger...",
+      "Dette er hemmeligheten bak glødende hud som ingen snakker om...",
+      "Slutt å gjøre denne vanlige feilen om morgenen!",
+      "Jeg har testet [produkt] i 14 dager, og dette skjedde...",
+      "Dette er det eneste produktet i min sminkerutine jeg aldri bytter ut.",
+      "Ikke kjøp [produkt] før du har sett denne videoen...",
+      "Her er hvorfor alle snakker om dette produktet akkurat nå!"
+    ];
+
+    window.currentSelectedClientId = null;
+
+    // Fanebytte
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeTab = document.getElementById('tab-' + tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.remove('bg-brand-500/10', 'text-brand-300', 'border', 'border-brand-500/20', 'shadow-sm');
+        btn.classList.add('text-slate-400');
+      });
+
+      const currentNavBtn = document.getElementById('nav-' + tabId);
+      if (currentNavBtn) {
+        currentNavBtn.classList.remove('text-slate-400');
+        currentNavBtn.classList.add('bg-brand-500/10', 'text-brand-300', 'border', 'border-brand-500/20', 'shadow-sm');
+      }
+
+      const titles = {
+        dashboard: 'Oversikt & Nøkkeltall',
+        clients: 'Kundeoversikt & CRM',
+        pipeline: 'Oppdrags-Pipeline (Kanban)',
+        storyboard: 'UGC Manus & Hook-Builder',
+        ratecalc: 'Pris- og Pakkekalkulator',
+        checklist: 'Leveransesjekkliste for video'
+      };
+      const breadcrumb = document.getElementById('header-breadcrumb');
+      if (breadcrumb) breadcrumb.innerText = titles[tabId] || 'CreatorDesk';
+
+      if (tabId === 'clients') window.renderClientsView();
+      if (tabId === 'pipeline') window.renderPipeline();
+      if (tabId === 'dashboard') window.renderDashboard();
+
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.toggleMobileNav = function() {
+      const mob = document.getElementById('mobile-nav');
+      if (mob) mob.classList.toggle('hidden');
+    };
+
+    window.openModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.closeModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+      if (id === 'deal-modal') {
+        const form = document.getElementById('deal-form');
+        if (form) form.reset();
+        document.getElementById('deal-id').value = '';
+        document.getElementById('deal-modal-title').innerText = 'Nytt UGC-oppdrag';
+      } else if (id === 'brand-modal') {
+        const form = document.getElementById('brand-form');
+        if (form) form.reset();
+        document.getElementById('bm-id').value = '';
+        document.getElementById('brand-modal-title').innerText = 'Ny Kunde / Merkevare';
+      }
+    };
+
+    window.showToast = function(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      if (!toast || !toastMsg) return;
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 2800);
+    };
+
+    // Dashboard
+    window.renderDashboard = function() {
+      const deals = window._deals || [];
+      const brands = window._brands || [];
+
+      let pipelineSum = 0;
+      let wonSum = 0;
+      let filmingCount = 0;
+      let totalAmount = 0;
+
+      deals.forEach(d => {
+        const val = Number(d.price) || 0;
+        totalAmount += val;
+        if (d.status === 'paid') {
+          wonSum += val;
+        } else {
+          pipelineSum += val;
+        }
+        if (d.status === 'filming' || d.status === 'scripting') {
+          filmingCount++;
+        }
+      });
+
+      const pipeValEl = document.getElementById('kpi-pipeline-val');
+      const wonValEl = document.getElementById('kpi-won-val');
+      const filmingEl = document.getElementById('kpi-filming-count');
+      const avgRateEl = document.getElementById('kpi-avg-rate');
+      const activeDealsBadge = document.getElementById('badge-active-deals');
+      const clientsCountBadge = document.getElementById('badge-clients-count');
+      const activeDealsCount = document.getElementById('kpi-active-deals-count');
+
+      if (pipeValEl) pipeValEl.innerText = pipelineSum.toLocaleString('no-NO') + ' kr';
+      if (wonValEl) wonValEl.innerText = wonSum.toLocaleString('no-NO') + ' kr';
+      if (filmingEl) filmingEl.innerText = filmingCount;
+      if (activeDealsBadge) activeDealsBadge.innerText = deals.filter(d => d.status !== 'paid').length;
+      if (clientsCountBadge) clientsCountBadge.innerText = brands.length;
+      if (activeDealsCount) activeDealsCount.innerText = deals.filter(d => d.status !== 'paid').length + ' oppdrag';
+
+      const avg = deals.length > 0 ? Math.round(totalAmount / deals.length) : 0;
+      if (avgRateEl) avgRateEl.innerText = avg.toLocaleString('no-NO') + ' kr';
+
+      // Nærmeste oppdrag
+      const urgentContainer = document.getElementById('dashboard-urgent-list');
+      if (!urgentContainer) return;
+      urgentContainer.innerHTML = '';
+
+      const active = deals.filter(d => d.status !== 'paid');
+      if (active.length === 0) {
+        urgentContainer.innerHTML = `<div class="text-xs text-slate-500 py-6 text-center italic">Ingen aktive oppdrag akkurat nå.</div>`;
+      } else {
+        active.slice(0, 4).forEach(d => {
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-slate-700 transition-all';
+          item.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold text-xs">
+                ${(d.brand || 'UG').substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-200">${escapeHtml(d.brand)} <span class="text-slate-400 font-normal">(${escapeHtml(d.product || 'UGC Video')})</span></p>
+                <p class="text-[11px] text-slate-400">Frist: <span class="text-slate-300 font-medium">${d.deadline ? formatDate(d.deadline) : 'Ikke satt'}</span></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-white">${Number(d.price).toLocaleString('no-NO')} kr</span>
+            </div>
+          `;
+          urgentContainer.appendChild(item);
+        });
+      }
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    // Kundeoversikt & CRM
+    window.renderClientsView = function() {
+      const search = (document.getElementById('client-search')?.value || '').toLowerCase();
+      const container = document.getElementById('clients-grid');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const brands = window._brands || [];
+      const deals = window._deals || [];
+
+      let totalRevenue = 0;
+      let repeatCount = 0;
+
+      const filtered = brands.filter(b => {
+        if (!search) return true;
+        const target = ((b.name || '') + ' ' + (b.category || '') + ' ' + (b.contact || '')).toLowerCase();
+        return target.includes(search);
+      });
+
+      brands.forEach(b => {
+        const clientDeals = deals.filter(d => (d.brand || '').toLowerCase() === (b.name || '').toLowerCase());
+        const sum = clientDeals.reduce((acc, cur) => acc + (Number(cur.price) || 0), 0);
+        totalRevenue += sum;
+        if (clientDeals.length > 1) repeatCount++;
+      });
+
+      const statTotal = document.getElementById('stat-total-clients');
+      const statRepeat = document.getElementById('stat-repeat-clients');
+      const statRev = document.getElementById('stat-clients-revenue');
+
+      if (statTotal) statTotal.innerText = brands.length;
+      if (statRepeat) statRepeat.innerText = repeatCount;
+      if (statRev) statRev.innerText = totalRevenue.toLocaleString('no-NO') + ' kr';
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-500 text-xs italic">
+            Ingen kunder funnet. Klikk "+ Ny kunde" for å legge til din første merkevare!
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(b => {
+        const clientDeals = deals.filter(d => (d.brand || '').toLowerCase() === (b.name || '').toLowerCase());
+        const totalVal = clientDeals.reduce((acc, cur) => acc + (Number(cur.price) || 0), 0);
+        const activeDealsCount = clientDeals.filter(d => d.status !== 'paid').length;
+
+        const card = document.createElement('div');
+        card.className = 'rounded-2xl bg-slate-900/70 border border-slate-800/80 p-5 shadow-sm hover:border-brand-500/40 hover:bg-slate-900/90 transition-all flex flex-col justify-between group';
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600/30 to-indigo-600/30 border border-brand-500/20 text-brand-300 font-bold flex items-center justify-center text-sm shadow-inner">
+                  ${(b.name || 'CU').substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 class="font-bold text-sm text-white group-hover:text-brand-300 transition-colors">${escapeHtml(b.name)}</h3>
+                  <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700/60 mt-0.5">
+                    ${escapeHtml(b.category || 'Generell')}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="editBrand('${b.id}')" class="p-1 hover:text-brand-300 text-slate-400" title="Rediger kunde">
+                  <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="deleteBrand('${b.id}')" class="p-1 hover:text-rose-400 text-slate-400" title="Slett kunde">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-slate-400 my-3 pb-3 border-b border-slate-800/60">
+              <p><strong class="text-slate-300">Kontakt:</strong> ${escapeHtml(b.contact || 'Ikke oppgitt')}</p>
+              <p><strong class="text-slate-300">E-post:</strong> <span class="text-brand-300">${escapeHtml(b.email || '-')}</span></p>
+              ${b.phone ? `<p><strong class="text-slate-300">Telefon:</strong> ${escapeHtml(b.phone)}</p>` : ''}
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+              <div class="p-2 rounded-xl bg-slate-950/60 border border-slate-800">
+                <span class="text-[10px] text-slate-500 block">Oppdrag</span>
+                <span class="font-bold text-slate-200">${clientDeals.length} stk ${activeDealsCount > 0 ? `<span class="text-amber-400">(${activeDealsCount} aktive)</span>` : ''}</span>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-950/60 border border-slate-800">
+                <span class="text-[10px] text-slate-500 block">Totalverdi</span>
+                <span class="font-bold text-emerald-400">${totalVal.toLocaleString('no-NO')} kr</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between gap-2">
+            <button onclick="viewClientDetail('${b.id}')" class="flex-1 py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center justify-center gap-1.5 transition-all">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i> Detaljer & Logg
+            </button>
+            <button onclick="quickCreateDealFor('${escapeHtml(b.name)}')" class="py-1.5 px-2.5 rounded-xl bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 border border-brand-500/30 text-xs font-semibold flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Oppdrag
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.viewClientDetail = function(clientId) {
+      const client = (window._brands || []).find(b => String(b.id) === String(clientId));
+      if (!client) return;
+
+      window.currentSelectedClientId = clientId;
+
+      document.getElementById('cd-avatar').innerText = (client.name || 'CU').substring(0, 2).toUpperCase();
+      document.getElementById('cd-name').innerText = client.name;
+      document.getElementById('cd-category').innerText = client.category || 'Generell';
+      document.getElementById('cd-contact').innerText = client.contact || 'Ikke oppgitt';
+      document.getElementById('cd-terms').innerText = client.terms || '14 dager';
+      document.getElementById('cd-email').innerText = client.email || 'Ingen e-post';
+      document.getElementById('cd-phone').innerText = client.phone || 'Ingen telefon';
+      document.getElementById('cd-website').innerText = client.website || 'Ingen nettside';
+      document.getElementById('cd-notes').innerText = client.notes || 'Ingen notater eller instrukser lagret.';
+
+      const clientDeals = (window._deals || []).filter(d => (d.brand || '').toLowerCase() === (client.name || '').toLowerCase());
+      const totalVal = clientDeals.reduce((acc, cur) => acc + (Number(cur.price) || 0), 0);
+
+      document.getElementById('cd-deals-count').innerText = clientDeals.length + ' oppdrag';
+      document.getElementById('cd-total-value').innerText = totalVal.toLocaleString('no-NO') + ' kr';
+
+      const dealsList = document.getElementById('cd-deals-list');
+      dealsList.innerHTML = '';
+
+      if (clientDeals.length === 0) {
+        dealsList.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 italic">Ingen oppdrag registrert på denne kunden ennå.</div>`;
+      } else {
+        clientDeals.forEach(d => {
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs';
+          item.innerHTML = `
+            <div>
+              <span class="font-bold text-slate-200 block">${escapeHtml(d.product || 'UGC Video')}</span>
+              <span class="text-[10px] text-slate-400">Frist: ${d.deadline ? formatDate(d.deadline) : 'Ikke satt'} • Status: <span class="capitalize text-brand-300 font-semibold">${d.status}</span></span>
+            </div>
+            <div class="text-right">
+              <span class="font-bold text-white block">${Number(d.price).toLocaleString('no-NO')} kr</span>
+              <button onclick="editDeal('${d.id}'); closeModal('client-detail-modal');" class="text-[10px] text-brand-400 hover:underline">Åpne</button>
+            </div>
+          `;
+          dealsList.appendChild(item);
+        });
+      }
+
+      document.getElementById('cd-edit-btn').onclick = () => {
+        closeModal('client-detail-modal');
+        editBrand(client.id);
+      };
+
+      openModal('client-detail-modal');
+    };
+
+    window.createDealForCurrentClient = function() {
+      if (!window.currentSelectedClientId) return;
+      const client = (window._brands || []).find(b => String(b.id) === String(window.currentSelectedClientId));
+      if (!client) return;
+      closeModal('client-detail-modal');
+      quickCreateDealFor(client.name);
+    };
+
+    window.quickCreateDealFor = function(brandName) {
+      document.getElementById('deal-form').reset();
+      document.getElementById('deal-id').value = '';
+      document.getElementById('deal-brand').value = brandName;
+      document.getElementById('deal-modal-title').innerText = `Nytt UGC-oppdrag for ${brandName}`;
+      openModal('deal-modal');
+    };
+
+    window.editBrand = function(id) {
+      const b = (window._brands || []).find(item => String(item.id) === String(id));
+      if (!b) return;
+
+      document.getElementById('bm-id').value = b.id;
+      document.getElementById('bm-name').value = b.name;
+      document.getElementById('bm-category').value = b.category || '';
+      document.getElementById('bm-contact').value = b.contact || '';
+      document.getElementById('bm-email').value = b.email || '';
+      document.getElementById('bm-phone').value = b.phone || '';
+      document.getElementById('bm-website').value = b.website || '';
+      document.getElementById('bm-terms').value = b.terms || '14 dager';
+      document.getElementById('bm-notes').value = b.notes || '';
+      document.getElementById('brand-modal-title').innerText = 'Rediger Kunde / Merkevare';
+
+      openModal('brand-modal');
+    };
+
+    window.saveBrand = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('bm-id').value;
+      const name = document.getElementById('bm-name').value.trim();
+      const category = document.getElementById('bm-category').value.trim();
+      const contact = document.getElementById('bm-contact').value.trim();
+      const email = document.getElementById('bm-email').value.trim();
+      const phone = document.getElementById('bm-phone').value.trim();
+      const website = document.getElementById('bm-website').value.trim();
+      const terms = document.getElementById('bm-terms').value;
+      const notes = document.getElementById('bm-notes').value.trim();
+
+      if (!name) return;
+
+      const brandObj = {
+        id: id || ('b_' + Date.now()),
+        name,
+        category,
+        contact,
+        email,
+        phone,
+        website,
+        terms,
+        notes
+      };
+
+      if (id) {
+        const idx = (window._brands || []).findIndex(b => String(b.id) === String(id));
+        if (idx !== -1) window._brands[idx] = brandObj;
+      } else {
+        window._brands.push(brandObj);
+      }
+      window.saveLocalData('ugc_brands', window._brands);
+
+      if (window.dbSaveBrand) {
+        window.dbSaveBrand(brandObj);
+      }
+
+      closeModal('brand-modal');
+      renderClientsView();
+      renderDashboard();
+      showToast('Kunde lagret!');
+    };
+
+    window.deleteBrand = async function(id) {
+      if (!confirm('Er du sikker på at du vil slette denne kunden?')) return;
+      window._brands = (window._brands || []).filter(b => String(b.id) !== String(id));
+      window.saveLocalData('ugc_brands', window._brands);
+
+      if (window.dbDeleteBrand) {
+        window.dbDeleteBrand(id);
+      }
+      renderClientsView();
+      renderDashboard();
+      showToast('Kunden ble slettet.');
+    };
+
+    // Pipeline & Kanban
+    window.renderPipeline = function() {
+      const search = (document.getElementById('pipeline-search')?.value || '').toLowerCase();
+      const deals = window._deals || [];
+      
+      const columns = {
+        lead: document.getElementById('col-lead'),
+        scripting: document.getElementById('col-scripting'),
+        filming: document.getElementById('col-filming'),
+        review: document.getElementById('col-review'),
+        paid: document.getElementById('col-paid')
+      };
+
+      Object.values(columns).forEach(col => { if (col) col.innerHTML = ''; });
+      const counts = { lead: 0, scripting: 0, filming: 0, review: 0, paid: 0 };
+
+      deals.forEach(deal => {
+        if (search) {
+          const str = (deal.brand + ' ' + (deal.product || '') + ' ' + (deal.notes || '')).toLowerCase();
+          if (!str.includes(search)) return;
+        }
+
+        counts[deal.status] = (counts[deal.status] || 0) + 1;
+        const col = columns[deal.status];
+        if (!col) return;
+
+        const card = document.createElement('div');
+        card.className = 'p-3.5 rounded-xl bg-slate-950 border border-slate-800/90 shadow hover:border-brand-500/50 cursor-grab active:cursor-grabbing transition-all space-y-2 group';
+        card.draggable = true;
+        card.ondragstart = (e) => e.dataTransfer.setData('text/plain', String(deal.id));
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <span class="text-xs font-bold text-white tracking-tight">${escapeHtml(deal.brand)}</span>
+            <span class="text-xs font-extrabold text-emerald-400">${Number(deal.price).toLocaleString('no-NO')} kr</span>
+          </div>
+
+          <div class="text-[11px] text-slate-300 flex items-center gap-1">
+            <i data-lucide="package" class="w-3 h-3 text-slate-500"></i>
+            <span class="truncate">${escapeHtml(deal.product || 'UGC Innhold')}</span>
+          </div>
+
+          ${deal.notes ? `<p class="text-[11px] text-slate-400 line-clamp-2 italic bg-slate-900/60 p-1.5 rounded-lg border border-slate-800/50">"${escapeHtml(deal.notes)}"</p>` : ''}
+
+          <div class="flex items-center justify-between pt-1 text-[11px] text-slate-400 border-t border-slate-900">
+            <span class="flex items-center gap-1">
+              <i data-lucide="calendar" class="w-3 h-3"></i> ${deal.deadline ? formatDate(deal.deadline) : 'Ingen frist'}
+            </span>
+            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick="editDeal('${deal.id}')" class="p-1 hover:text-brand-300 text-slate-400" title="Rediger">
+                <i data-lucide="pencil" class="w-3 h-3"></i>
+              </button>
+              <button onclick="deleteDeal('${deal.id}')" class="p-1 hover:text-rose-400 text-slate-400" title="Slett">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        col.appendChild(card);
+      });
+
+      document.getElementById('col-count-lead').innerText = counts.lead || 0;
+      document.getElementById('col-count-scripting').innerText = counts.scripting || 0;
+      document.getElementById('col-count-filming').innerText = counts.filming || 0;
+      document.getElementById('col-count-review').innerText = counts.review || 0;
+      document.getElementById('col-count-paid').innerText = counts.paid || 0;
+
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.allowDrop = function(e) {
+      e.preventDefault();
+    };
+
+    window.handleDrop = async function(e, newStatus) {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text/plain');
+      const deal = (window._deals || []).find(d => String(d.id) === String(id));
+      if (deal && deal.status !== newStatus) {
+        deal.status = newStatus;
+        window.saveLocalData('ugc_deals', window._deals);
+        if (window.dbSaveDeal) {
+          window.dbSaveDeal(deal);
+        }
+        renderPipeline();
+        renderDashboard();
+        showToast(`Flyttet til ${newStatus.toUpperCase()}`);
+      }
+    };
+
+    window.saveDeal = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('deal-id').value;
+      const brand = document.getElementById('deal-brand').value.trim();
+      const product = document.getElementById('deal-product').value.trim();
+      const price = parseFloat(document.getElementById('deal-price').value) || 0;
+      const status = document.getElementById('deal-status').value;
+      const deadline = document.getElementById('deal-deadline').value;
+      const notes = document.getElementById('deal-notes').value.trim();
+
+      if (!brand) return;
+
+      const dealObj = {
+        id: id || ('d_' + Date.now()),
+        brand,
+        product,
+        price,
+        status,
+        deadline,
+        notes
+      };
+
+      if (id) {
+        const idx = (window._deals || []).findIndex(d => String(d.id) === String(id));
+        if (idx !== -1) window._deals[idx] = dealObj;
+      } else {
+        window._deals.push(dealObj);
+      }
+      window.saveLocalData('ugc_deals', window._deals);
+
+      // Sjekk om merkevaren allerede finnes i kunder, hvis ikke foreslå eller opprett automatisk
+      const existingBrand = (window._brands || []).find(b => b.name.toLowerCase() === brand.toLowerCase());
+      if (!existingBrand) {
+        const newBrand = {
+          id: 'b_' + Date.now(),
+          name: brand,
+          category: 'Generell',
+          contact: '',
+          email: '',
+          phone: '',
+          website: '',
+          terms: '14 dager',
+          notes: 'Lagt til automatisk via oppdrag.'
+        };
+        window._brands.push(newBrand);
+        window.saveLocalData('ugc_brands', window._brands);
+        if (window.dbSaveBrand) window.dbSaveBrand(newBrand);
+      }
+
+      if (window.dbSaveDeal) {
+        window.dbSaveDeal(dealObj);
+      }
+
+      closeModal('deal-modal');
+      renderPipeline();
+      renderDashboard();
+      renderClientsView();
+      showToast('Oppdrag lagret!');
+    };
+
+    window.editDeal = function(id) {
+      const deal = (window._deals || []).find(d => String(d.id) === String(id));
+      if (!deal) return;
+      document.getElementById('deal-id').value = deal.id;
+      document.getElementById('deal-brand').value = deal.brand;
+      document.getElementById('deal-product').value = deal.product || '';
+      document.getElementById('deal-price').value = deal.price;
+      document.getElementById('deal-status').value = deal.status;
+      document.getElementById('deal-deadline').value = deal.deadline || '';
+      document.getElementById('deal-notes').value = deal.notes || '';
+      document.getElementById('deal-modal-title').innerText = 'Rediger UGC-oppdrag';
+      openModal('deal-modal');
+    };
+
+    window.deleteDeal = async function(id) {
+      if (!confirm('Er du sikker på at du vil slette dette oppdraget?')) return;
+      window._deals = (window._deals || []).filter(d => String(d.id) !== String(id));
+      window.saveLocalData('ugc_deals', window._deals);
+
+      if (window.dbDeleteDeal) {
+        window.dbDeleteDeal(id);
+      }
+      renderPipeline();
+      renderDashboard();
+      renderClientsView();
+      showToast('Oppdraget ble slettet.');
+    };
+
+    // Storyboard
+    window.updatePrompterPreview = function() {
+      const brand = document.getElementById('script-brand-input').value || 'Produktet';
+      const target = document.getElementById('script-target-input').value || '';
+      
+      const hookVoice = document.getElementById('sb-hook-voice').value;
+      const hookVisual = document.getElementById('sb-hook-visual').value;
+
+      const probVoice = document.getElementById('sb-prob-voice').value;
+      const probVisual = document.getElementById('sb-prob-visual').value;
+
+      const solVoice = document.getElementById('sb-sol-voice').value;
+      const solVisual = document.getElementById('sb-sol-visual').value;
+
+      const ctaVoice = document.getElementById('sb-cta-voice').value;
+      const ctaVisual = document.getElementById('sb-cta-visual').value;
+
+      const fullScript = `[PROSJEKT: ${brand.toUpperCase()}]
+${target ? '[MÅLGRUPPE: ' + target + ']\n' : ''}
+---
+1. HOOK (0-3s):
+[Visuelt]: ${hookVisual || 'Se rett i kamera'}
+[Manus]: "${hookVoice || 'Skriv din hook...'}"
+
+2. PROBLEM (3-10s):
+[Visuelt]: ${probVisual || 'Vis utfordring'}
+[Manus]: "${probVoice || 'Hvorfor vanlige metoder mislykkes...'}"
+
+3. LØSNING (10-22s):
+[Visuelt]: ${solVisual || 'Produkt i aksjon'}
+[Manus]: "${solVoice || 'Presenter produktet og 2 fordeler...'}"
+
+4. CTA (22-30s):
+[Visuelt]: ${ctaVisual || 'Hold frem produktet'}
+[Manus]: "${ctaVoice || 'Test i dag via lenken under!'}"
+`;
+
+      document.getElementById('prompter-display').innerText = fullScript;
+    };
+
+    window.loadScriptTemplate = function(type) {
+      if (type === 'problem-solution') {
+        document.getElementById('script-brand-input').value = 'HydraBalance Krem';
+        document.getElementById('script-target-input').value = 'Tørr vinterhud';
+        document.getElementById('sb-hook-voice').value = 'Tre grunner til at jeg byttet ut alle mine dyre kremer med denne...';
+        document.getElementById('sb-hook-visual').value = 'Holder opp kremen mot linsen, zoom-in.';
+        document.getElementById('sb-prob-voice').value = 'Hver vinter flasser huden min, og vanlige kremer føltes bare tunge.';
+        document.getElementById('sb-prob-visual').value = 'Peker på tørre partier i ansiktet foran speilet.';
+        document.getElementById('sb-sol-voice').value = 'Denne trekker inn på under et minutt og holder hele dagen med ceramider.';
+        document.getElementById('sb-sol-visual').value = 'Smører på kinnet, viser en naturlig glød.';
+        document.getElementById('sb-cta-voice').value = 'De har 20% lanseringsrabatt nå. Trykk lenken under før det er tomt!';
+        document.getElementById('sb-cta-visual').value = 'Peker ned mot knappen med produktet.';
+      } else {
+        document.getElementById('script-brand-input').value = 'PureSound Headset';
+        document.getElementById('script-target-input').value = 'Studenter og kontor';
+        document.getElementById('sb-hook-voice').value = 'TikTok fikk meg til å kjøpe dette, og hypen stemmer faktisk...';
+        document.getElementById('sb-hook-visual').value = 'Rask unboxing og tar det på hodet.';
+        document.getElementById('sb-prob-voice').value = 'Jeg klarer aldri å konsentrere meg på kaffebarer eller lesesalen.';
+        document.getElementById('sb-prob-visual').value = 'Sliten foran støyende kafé.';
+        document.getElementById('sb-sol-voice').value = 'Støydempingen fjerner all summing, og batteriet varer i 40 timer.';
+        document.getElementById('sb-sol-visual').value = 'Trykker på knappen og puster lettet ut.';
+        document.getElementById('sb-cta-voice').value = 'Bruk koden i bio for fri frakt!';
+        document.getElementById('sb-cta-visual').value = 'Peker mot profilen.';
+      }
+      updatePrompterPreview();
+      showToast('Mal lastet inn!');
+    };
+
+    window.clearScript = function() {
+      document.getElementById('script-brand-input').value = '';
+      document.getElementById('script-target-input').value = '';
+      document.getElementById('sb-hook-voice').value = '';
+      document.getElementById('sb-hook-visual').value = '';
+      document.getElementById('sb-prob-voice').value = '';
+      document.getElementById('sb-prob-visual').value = '';
+      document.getElementById('sb-sol-voice').value = '';
+      document.getElementById('sb-sol-visual').value = '';
+      document.getElementById('sb-cta-voice').value = '';
+      document.getElementById('sb-cta-visual').value = '';
+      document.getElementById('prompter-display').innerText = 'Fyll ut feltene for å se manus...';
+      showToast('Storyboard tømt.');
+    };
+
+    window.copyPrompterText = function() {
+      copyToClipboard(document.getElementById('prompter-display').innerText);
+      showToast('Manus kopiert til utklippstavlen!');
+    };
+
+    window.saveCurrentScriptAsNote = async function() {
+      const brand = document.getElementById('script-brand-input').value || 'Uten tittel';
+      const item = {
+        id: 's_' + Date.now(),
+        title: brand,
+        date: new Date().toLocaleDateString('no-NO', { day: '2-digit', month: 'short' }),
+        brand: document.getElementById('script-brand-input').value,
+        target: document.getElementById('script-target-input').value,
+        hookVoice: document.getElementById('sb-hook-voice').value,
+        hookVisual: document.getElementById('sb-hook-visual').value,
+        probVoice: document.getElementById('sb-prob-voice').value,
+        probVisual: document.getElementById('sb-prob-visual').value,
+        solVoice: document.getElementById('sb-sol-voice').value,
+        solVisual: document.getElementById('sb-sol-visual').value,
+        ctaVoice: document.getElementById('sb-cta-voice').value,
+        ctaVisual: document.getElementById('sb-cta-visual').value
+      };
+
+      (window._savedScripts = window._savedScripts || []).unshift(item);
+      window.saveLocalData('ugc_scripts', window._savedScripts);
+
+      if (window.dbSaveScript) {
+        window.dbSaveScript(item);
+      }
+      renderSavedScriptsList();
+      showToast('Manus lagret!');
+    };
+
+    window.loadSavedScript = function(id) {
+      const s = (window._savedScripts || []).find(item => String(item.id) === String(id));
+      if (!s) return;
+      document.getElementById('script-brand-input').value = s.brand || s.title || '';
+      document.getElementById('script-target-input').value = s.target || '';
+      document.getElementById('sb-hook-voice').value = s.hookVoice || '';
+      document.getElementById('sb-hook-visual').value = s.hookVisual || '';
+      document.getElementById('sb-prob-voice').value = s.probVoice || '';
+      document.getElementById('sb-prob-visual').value = s.probVisual || '';
+      document.getElementById('sb-sol-voice').value = s.solVoice || '';
+      document.getElementById('sb-sol-visual').value = s.solVisual || '';
+      document.getElementById('sb-cta-voice').value = s.ctaVoice || '';
+      document.getElementById('sb-cta-visual').value = s.ctaVisual || '';
+      updatePrompterPreview();
+      showToast(`Lastet inn: ${s.title}`);
+    };
+
+    window.deleteSavedScript = function(e, id) {
+      e.stopPropagation();
+      window._savedScripts = (window._savedScripts || []).filter(item => String(item.id) !== String(id));
+      window.saveLocalData('ugc_scripts', window._savedScripts);
+      if (window.dbDeleteScript) window.dbDeleteScript(id);
+      renderSavedScriptsList();
+      showToast('Manus slettet.');
+    };
+
+    window.renderSavedScriptsList = function() {
+      const container = document.getElementById('saved-scripts-list');
+      if (!container) return;
+      container.innerHTML = '';
+      const scripts = window._savedScripts || [];
+      if (scripts.length === 0) {
+        container.innerHTML = `<div class="text-slate-500 text-[11px] py-2 text-center italic">Ingen lagrede manus ennå.</div>`;
+        return;
+      }
+      scripts.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-500/40 cursor-pointer transition-all group';
+        item.onclick = () => loadSavedScript(s.id);
+        item.innerHTML = `
+          <div class="truncate mr-2">
+            <span class="truncate font-medium text-slate-200 block text-xs group-hover:text-brand-300">${escapeHtml(s.title)}</span>
+            <span class="text-[10px] text-slate-500 font-mono">${s.date || ''}</span>
+          </div>
+          <button onclick="deleteSavedScript(event, '${s.id}')" class="p-1 text-slate-500 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Slett manus">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    // Priskalkulator
+    window.calculateRates = function() {
+      const videoCount = parseInt(document.getElementById('calc-video-count').value) || 1;
+      document.getElementById('calc-video-count-lbl').innerText = videoCount + ' stk';
+
+      const baseRate = parseFloat(document.getElementById('calc-base-rate').value) || 0;
+      const extraHooksFee = parseFloat(document.getElementById('calc-extra-hooks').value) || 0;
+      const usageRightsPct = parseFloat(document.querySelector('input[name="usage-rights"]:checked')?.value || 0);
+      
+      const addRaw = document.getElementById('calc-addon-raw')?.checked ? 800 : 0;
+      const addRush = document.getElementById('calc-addon-rush')?.checked ? 1200 : 0;
+
+      const subtotalVideos = (baseRate * videoCount);
+      const usageFee = Math.round(subtotalVideos * usageRightsPct);
+      const addonsTotal = addRaw + addRush;
+      const total = subtotalVideos + extraHooksFee + usageFee + addonsTotal;
+
+      document.getElementById('calc-total-display').innerText = total.toLocaleString('no-NO') + ' kr';
+      document.getElementById('cb-base').innerText = `${subtotalVideos.toLocaleString('no-NO')} kr`;
+      document.getElementById('cb-hooks').innerText = extraHooksFee.toLocaleString('no-NO') + ' kr';
+      document.getElementById('cb-rights').innerText = usageFee.toLocaleString('no-NO') + ' kr';
+      document.getElementById('cb-addons').innerText = addonsTotal.toLocaleString('no-NO') + ' kr';
+    };
+
+    window.copyQuoteEmail = function() {
+      const videoCount = document.getElementById('calc-video-count').value;
+      const total = document.getElementById('calc-total-display').innerText;
+
+      const emailBody = `Hei!
+
+Her er mitt tilbud for UGC-videoer tilpasset TikTok og Instagram Reels:
+- Innhold: ${videoCount} stk høyoppløselige 9:16 UGC-videoer
+- Inkludert: Konsept, manus/storyboard, filming, redigering og 1 korrekturrunde
+- Estimert totalpris: ${total} eksl. mva.
+
+Leveringstid er normalt 5-7 dager etter at produktet er mottatt.
+
+Passer dette for dere?
+
+Mvh,
+UGC Creator`;
+
+      copyToClipboard(emailBody);
+      showToast('Tilbuds-epost kopiert!');
+    };
+
+    // Sjekkliste
+    window.saveChecklistState = function() {
+      const boxes = document.querySelectorAll('#checklist-items-container input[type="checkbox"]');
+      let count = 0;
+      const state = {};
+      boxes.forEach(b => { 
+        if (b.checked) count++; 
+        state[b.id] = b.checked;
+      });
+      const pct = Math.round((count / boxes.length) * 100);
+      document.getElementById('checklist-progress-text').innerText = `${count} / ${boxes.length} fullført`;
+      document.getElementById('checklist-progress-bar').style.width = pct + '%';
+      window.saveLocalData('ugc_checklist', state);
+    };
+
+    window.restoreChecklistState = function() {
+      const state = window.loadLocalData('ugc_checklist', {});
+      const boxes = document.querySelectorAll('#checklist-items-container input[type="checkbox"]');
+      let count = 0;
+      boxes.forEach(b => {
+        if (state[b.id]) {
+          b.checked = true;
+          count++;
+        }
+      });
+      const pct = Math.round((count / boxes.length) * 100);
+      document.getElementById('checklist-progress-text').innerText = `${count} / ${boxes.length} fullført`;
+      document.getElementById('checklist-progress-bar').style.width = pct + '%';
+    };
+
+    window.resetChecklist = function() {
+      document.querySelectorAll('#checklist-items-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+      saveChecklistState();
+      showToast('Sjekkliste nullstilt.');
+    };
+
+    window.generateRandomHook = function() {
+      const random = HOOK_IDEAS[Math.floor(Math.random() * HOOK_IDEAS.length)];
+      const box = document.getElementById('random-hook-box');
+      if (box) box.innerText = `"${random}"`;
+    };
+
+    window.copyCurrentHook = function() {
+      copyToClipboard(document.getElementById('random-hook-box').innerText);
+      showToast('Hook kopiert!');
+    };
+
+    // CSV Eksport
+    window.exportToCSV = function() {
+      const deals = window._deals || [];
+      if (deals.length === 0) {
+        showToast('Ingen oppdrag å eksportere.');
+        return;
+      }
+      let csv = 'Merkevare;Produkt;Pris (NOK);Status;Frist;Notater\r\n';
+      deals.forEach(d => {
+        const brand = (d.brand || '').replace(/;/g, ',');
+        const product = (d.product || '').replace(/;/g, ',');
+        const price = d.price || 0;
+        const status = d.status || '';
+        const deadline = d.deadline || '';
+        const notes = (d.notes || '').replace(/[\r\n]+/g, ' ').replace(/;/g, ',');
+        csv += `${brand};${product};${price};${status};${deadline};${notes}\r\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `UGC_Oppdrag_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV-fil lastet ned!');
+    };
+
+    // Hjelpere
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(ta);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}.${parts[1]}`;
+      return dateStr;
+    }
+
+    // Kjør oppsett ved oppstart
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) window.lucide.createIcons();
+      renderDashboard();
+      renderPipeline();
+      renderClientsView();
+      renderSavedScriptsList();
+      calculateRates();
+      generateRandomHook();
+      restoreChecklistState();
+      updatePrompterPreview();
+    });
+  </script>
+</body>
+</html>
